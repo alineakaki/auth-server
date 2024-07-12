@@ -40,7 +40,7 @@ public class AuthServiceImpl implements AuthService {
                     .verify(token.replace(BEARER_PREFIX, Strings.EMPTY))
                     .getPayload();
         } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
-            log.error("######## Error > getPrivateKey : {}", e.getMessage());
+            log.error("######## Error > publicKey : {}", e.getMessage());
             throw new RuntimeException(e);
         }
 
