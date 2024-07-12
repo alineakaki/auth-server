@@ -1,44 +1,52 @@
 package br.com.auth_server.config;
 
+import br.com.auth_server.security.JWTAuthenticationFilter;
+import br.com.auth_server.service.AuthService;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authorization.AuthorizationDecision;
-import org.springframework.security.authorization.AuthorizationManager;
-import org.springframework.security.config.Customizer;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final AuthService authService;
+    private AuthenticationConfiguration authenticationConfiguration;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                .requestMatchers(HttpMethod.POST, "/v1/token").permitAll()
-                .requestMatchers("/v1/assets/**").access(authorizationManager())
-                .anyRequest()
-                .authenticated())
-                .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.disable())
-                .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .oauth2ResourceServer(spec -> spec.jwt(Customizer.withDefaults()));
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(AbstractHttpConfigurer::disable)
+                .sessionManagement(sessionManagement ->
+                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(authorizeRequests ->
+                        authorizeRequests
+                                .requestMatchers(HttpMethod.GET, "/v1/jwt").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/actuator/health/**").permitAll()
+                                .requestMatchers("/v1/assets/**").authenticated())
+                .exceptionHandling(exceptionHandling ->
+                        exceptionHandling.authenticationEntryPoint((request, response, authException) ->
+                                response.sendError(HttpServletResponse.SC_UNAUTHORIZED)));
+        http.addFilterBefore(new JWTAuthenticationFilter(authenticationManager(authenticationConfiguration), authService),
+                UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 
-    private AuthorizationManager<RequestAuthorizationContext> authorizationManager() {
-        return (authentication, context) -> {
-            if (authentication.get().isAuthenticated() && authentication.get().getAuthorities().stream()
-                    .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("SCOPE_read:client_grants"))) {
-                return new AuthorizationDecision(true);
-            }
-            return new AuthorizationDecision(false);
-        };
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 }

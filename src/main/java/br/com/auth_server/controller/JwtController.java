@@ -1,7 +1,7 @@
 package br.com.auth_server.controller;
 
-import br.com.auth_server.service.AssetsService;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import br.com.auth_server.dto.response.TokenResponse;
+import br.com.auth_server.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/v1")
-public class AssetsController {
+public class JwtController {
 
-    private final AssetsService assetsService;
+    private final JwtService jwtService;
 
-    @GetMapping(value = "/assets")
-    public ResponseEntity<Object> assets() throws JsonProcessingException {
-       return ResponseEntity.status(HttpStatus.OK).body(assetsService.geAssets());
+    @GetMapping(value = "/jwt")
+    public ResponseEntity<TokenResponse> token()  {
+        return ResponseEntity.status(HttpStatus.OK).body(TokenResponse.builder().token(jwtService.createJwt()).build());
     }
 }

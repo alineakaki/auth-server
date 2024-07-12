@@ -1,40 +1,57 @@
 package br.com.auth_server.service.impl;
 
-import br.com.auth_server.api.OAuthClient;
-import br.com.auth_server.dto.request.AuthRequest;
-import br.com.auth_server.dto.response.AuthResponse;
-import br.com.auth_server.dto.request.TokenRequest;
+import br.com.auth_server.dto.response.JwtResponse;
+import br.com.auth_server.security.KeyProvider;
 import br.com.auth_server.service.AuthService;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Objects;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class AuthServiceImpl implements AuthService {
+    @Value("${public.key}")
+    private String publicKeyString;
 
-    @Value("${oauth.client-id}")
-    private String clientId;
-
-    @Value("${oauth.client-secret}")
-    private String clientSecret;
-
-    @Value("${oauth.issuer}")
-    private String oAuthIssuer;
-
-    private final OAuthClient oAuthClient;
-    private static final String GRANT_TYPE = "client_credentials";
+    private final KeyProvider keyProvider;
+    private static final String BEARER_PREFIX = "Bearer ";
 
     @Override
-    public AuthResponse token(AuthRequest request) throws JsonProcessingException {
-        var response = oAuthClient.token(TokenRequest.builder()
-                .clientId(clientId)
-                .clientSecret(clientSecret)
-                .audience(oAuthIssuer.concat("/api/v2/"))
-                .grantType(GRANT_TYPE).build());
-        return Objects.nonNull(response) ? response : null;
+    public UsernamePasswordAuthenticationToken getAuthentication(String token) throws JsonProcessingException {
+        String payloadB64 = null;
+        try {
+            payloadB64 = JWT
+                    .require(Algorithm.RSA256(keyProvider.stringToPublicKey(publicKeyString), null))
+                    .build()
+                    .verify(token.replace(BEARER_PREFIX, Strings.EMPTY))
+                    .getPayload();
+        } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
+            log.error("######## Error > getPrivateKey : {}", e.getMessage());
+            throw new RuntimeException(e);
+        }
+
+        var payload = new String(Base64.getDecoder().decode(payloadB64));
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        JwtResponse payloadModel = objectMapper.readValue(payload, JwtResponse.class);
+
+        if (Objects.nonNull(payloadModel.getClientId())){
+            return new UsernamePasswordAuthenticationToken(payloadModel, null, new ArrayList<>());
+        }
+        return null;
     }
 }
