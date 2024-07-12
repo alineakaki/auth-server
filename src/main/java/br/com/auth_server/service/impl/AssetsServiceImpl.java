@@ -20,7 +20,6 @@
         public AssetsServiceImpl(AssetsCapClient assetsCapClient, AssetsCoinLoreClient assetsCoinLoreClient) {
             this.assetsCapClient = assetsCapClient;
             this.assetsCoinLoreClient = assetsCoinLoreClient;
-            // Configure o Circuit Breaker
             CircuitBreakerConfig circuitBreakerConfig = CircuitBreakerConfig.custom()
                     .failureRateThreshold(50)
                     .waitDurationInOpenState(Duration.ofSeconds(30))
@@ -40,8 +39,7 @@
             try {
                 return assetsCapClient.getAssets();
             } catch (Exception e) {
-               //fallback
-                return assetsCoinLoreClient.getAssets();
+                return assetsCoinLoreClient.getAssets(); //fallback
             }
         }
     }
