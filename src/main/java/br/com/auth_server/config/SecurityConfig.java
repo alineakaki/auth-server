@@ -33,7 +33,7 @@ public class SecurityConfig {
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers(HttpMethod.GET, "/v1/jwt").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/v1/jwt").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/actuator/health/**").permitAll()
                                 .requestMatchers("/v1/assets/**").authenticated())
                 .exceptionHandling(exceptionHandling ->

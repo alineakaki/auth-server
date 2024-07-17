@@ -1,8 +1,7 @@
 package br.com.auth_server.controller;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
-
+import br.com.auth_server.dto.response.AssetsResponse;
+import br.com.auth_server.service.AssetsService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -11,10 +10,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import br.com.auth_server.service.AssetsService;
+import java.math.BigDecimal;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class AssetsControllerTest {
+class AssetsControllerTest {
 
     @InjectMocks
     private AssetsController assetsController;
@@ -23,11 +26,15 @@ public class AssetsControllerTest {
     private AssetsService assetsService;
 
     @Test
-    public void testAssets() throws Exception {
-        var assetsJson = "[{\"id\": 1, \"name\": \"Asset 1\"}]";
-        when(assetsService.geAssets()).thenReturn(assetsJson);
-        ResponseEntity<Object> response = assetsController.assets();
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(assetsJson, response.getBody());
+    void whenRequestOk_thenReturnAssetsList() {
+        List<AssetsResponse> assetsResponses  = List.of(AssetsResponse.builder()
+                .name("name")
+                .rank(123)
+                .priceUsd(new BigDecimal("100.00"))
+                .symbol("CRIP").build());
+        when(assetsService.geAssets()).thenReturn(assetsResponses);
+        ResponseEntity<List<AssetsResponse>> responseEntity = assetsController.assets();
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(assetsResponses, responseEntity.getBody());
     }
 }

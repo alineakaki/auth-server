@@ -40,13 +40,13 @@ public class AuthServiceImpl implements AuthService {
                     .verify(token.replace(BEARER_PREFIX, Strings.EMPTY))
                     .getPayload();
         } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
-            log.error("######## Error > getPrivateKey : {}", e.getMessage());
+            log.error("######## Error > publicKey : {}", e.getMessage());
             throw new RuntimeException(e);
         }
 
         var payload = new String(Base64.getDecoder().decode(payloadB64));
 
-        ObjectMapper objectMapper = new ObjectMapper();
+        var objectMapper = new ObjectMapper();
         JwtResponse payloadModel = objectMapper.readValue(payload, JwtResponse.class);
 
         if (Objects.nonNull(payloadModel.getClientId())){
