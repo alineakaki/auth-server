@@ -46,7 +46,7 @@ public class AuthServiceImpl implements AuthService {
 
         var payload = new String(Base64.getDecoder().decode(payloadB64));
 
-        ObjectMapper objectMapper = new ObjectMapper();
+        var objectMapper = new ObjectMapper();
         JwtResponse payloadModel = objectMapper.readValue(payload, JwtResponse.class);
 
         if (Objects.nonNull(payloadModel.getClientId())){

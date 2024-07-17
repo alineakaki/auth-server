@@ -1,5 +1,6 @@
 package br.com.auth_server.controller;
 
+import br.com.auth_server.dto.request.AuthRequest;
 import br.com.auth_server.dto.response.TokenResponse;
 import br.com.auth_server.service.JwtService;
 import org.junit.jupiter.api.Test;
@@ -27,8 +28,8 @@ class JwtControllerTest {
     @Test
     void testToken() {
         var expectedToken = "testToken";
-        when(jwtService.createJwt()).thenReturn(expectedToken);
-        ResponseEntity<TokenResponse> response = jwtController.token();
+        when(jwtService.createJwt(new AuthRequest())).thenReturn(expectedToken);
+        ResponseEntity<TokenResponse> response = jwtController.token(new AuthRequest());
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(expectedToken, Objects.requireNonNull(response.getBody()).getToken());
     }

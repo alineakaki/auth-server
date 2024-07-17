@@ -4,5 +4,6 @@ import lombok.Getter;
 
 @Getter
 public class AuthRequest {
-    private String token;
+    private String clientId;
+    private String privateKey;
 }

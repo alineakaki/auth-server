@@ -1,7 +1,6 @@
 package br.com.auth_server.controller;
 
 import br.com.auth_server.service.AssetsService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +16,7 @@ public class AssetsController {
     private final AssetsService assetsService;
 
     @GetMapping(value = "/assets")
-    public ResponseEntity<Object> assets() throws JsonProcessingException {
+    public ResponseEntity<Object> assets() {
        return ResponseEntity.status(HttpStatus.OK).body(assetsService.geAssets());
     }
 }
