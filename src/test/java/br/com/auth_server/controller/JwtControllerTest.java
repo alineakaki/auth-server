@@ -26,11 +26,13 @@ class JwtControllerTest {
     private JwtService jwtService;
 
     @Test
-    void testToken() {
-        var expectedToken = "testToken";
-        when(jwtService.createJwt(new AuthRequest())).thenReturn(expectedToken);
-        ResponseEntity<TokenResponse> response = jwtController.token(new AuthRequest());
+    void whenRequestOk_thenReturnToken() {
+        AuthRequest request = new AuthRequest("clientId", "privateKey");
+        String token = "testToken";
+        when(jwtService.createJwt(request)).thenReturn(token);
+        ResponseEntity<TokenResponse> response = jwtController.token(request);
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(expectedToken, Objects.requireNonNull(response.getBody()).getToken());
+        assertEquals(token, Objects.requireNonNull(response.getBody()).getToken());
     }
 }

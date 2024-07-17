@@ -2,13 +2,14 @@ package br.com.auth_server.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 import java.math.BigDecimal;
 
 @Builder
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class AssetsResponse {
     @JsonProperty("name")
     private String name;

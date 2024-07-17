@@ -9,9 +9,9 @@ Parâmetros de entrada: clientId e chave privada em formato String enviados no B
 **v1/assets**: Endpoint método GET que retorna uma lista de criptomoedas, onde é necessário passar no header o parâmetro Authorization com o token recuperado no endpoint anterior com o prefixo "Bearer ".  </br>
 O token JWT é validado com uma chave pública, previamente carregada no arquivo de configuração.</br></br>
 Para recuperar as informações de criptomoedas é ativado um CircuitBreaker caso a API AssetsCap falhar. Em caso de fallback, é realizado uma chamada para a API CoinLore para buscar os dados de uma fonte alternativa.</br>
-```failureRateThreshold(50):``` Ativa o disjuntor se 50% das requisições falharem.</br>
-```waitDurationInOpenState(Duration.ofSeconds(30)):```Mantém o disjuntor aberto por 30 segundos antes de tentar novamente.</br>
-```permittedNumberOfCallsInHalfOpenState(3):``` Permite 3 chamadas enquanto o disjuntor estiver no estado "semiaberto" para testar se a API se recuperou.</br>
+```failureRateThreshold=50``` Ativa o disjuntor se 50% das requisições falharem.</br>
+```waitDurationInOpenState=30s```Mantém o disjuntor aberto por 30 segundos antes de tentar chamar a API novamente.</br>
+```permittedNumberOfCallsInHalfOpenState=3``` Permite 3 chamadas enquanto o disjuntor estiver no estado "semiaberto" para testar se a API se recuperou.</br>
 
 ### Pré-requisitos
 
