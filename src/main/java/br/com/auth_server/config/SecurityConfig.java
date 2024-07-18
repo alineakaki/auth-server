@@ -22,10 +22,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final AuthService authService;
-    private AuthenticationConfiguration authenticationConfiguration;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationManager authenticationManager, JWTAuthenticationFilter jwtAuthenticationFilter) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
@@ -38,9 +37,9 @@ public class SecurityConfig {
                                 .requestMatchers("/v1/assets/**").authenticated())
                 .exceptionHandling(exceptionHandling ->
                         exceptionHandling.authenticationEntryPoint((request, response, authException) ->
-                                response.sendError(HttpServletResponse.SC_UNAUTHORIZED)));
-        http.addFilterBefore(new JWTAuthenticationFilter(authenticationManager(authenticationConfiguration), authService),
-                UsernamePasswordAuthenticationFilter.class);
+                                response.sendError(HttpServletResponse.SC_UNAUTHORIZED)))
+                .addFilterBefore(jwtAuthenticationFilter,
+                        UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -48,5 +47,10 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
+    public JWTAuthenticationFilter jwtAuthenticationFilter(AuthenticationManager authenticationManager) {
+        return new JWTAuthenticationFilter(authenticationManager, authService);
     }
 }
