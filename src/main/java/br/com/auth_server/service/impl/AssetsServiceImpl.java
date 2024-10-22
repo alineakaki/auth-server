@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +28,7 @@ public class AssetsServiceImpl implements AssetsService {
             return capClientResponse.getData()
                     .parallelStream()
                     .map(AssetsMapper::mapResponse)
-                    .collect(Collectors.toList());
+                    .toList();
 
         } catch (Exception e) {
             log.error("######## Error > getAssetsCapClient : {}", e.getMessage());
@@ -43,6 +42,6 @@ public class AssetsServiceImpl implements AssetsService {
         return coinCoreResponse.getData()
                 .parallelStream()
                 .map(AssetsMapper::mapResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 }
