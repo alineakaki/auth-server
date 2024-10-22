@@ -7,4 +7,6 @@ import lombok.Getter;
 @Getter
 public class TokenResponse {
     private String token;
+    private String refreshToken;
+    private String tokenType;
 }

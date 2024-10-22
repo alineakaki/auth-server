@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Objects;
 
+import static br.com.auth_server.util.JwtConstants.BEARER_PREFIX;
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -28,7 +30,6 @@ public class AuthServiceImpl implements AuthService {
     private String publicKeyString;
 
     private final KeyProvider keyProvider;
-    private static final String BEARER_PREFIX = "Bearer ";
 
     @Override
     public UsernamePasswordAuthenticationToken getAuthentication(String token) throws JsonProcessingException {
