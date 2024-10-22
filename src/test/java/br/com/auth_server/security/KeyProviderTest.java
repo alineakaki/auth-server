@@ -1,6 +1,9 @@
 package br.com.auth_server.security;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
@@ -10,12 +13,14 @@ import java.security.spec.InvalidKeySpecException;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@ExtendWith(MockitoExtension.class)
 class KeyProviderTest {
 
-    private final KeyProvider keyProvider = new KeyProvider();
+    @InjectMocks
+    private KeyProvider keyProvider;
 
     @Test
-    void testStringToPrivateKey() throws InvalidKeySpecException, NoSuchAlgorithmException {
+    void whenStringToPrivateKey_thenReturnPrivateKey() throws InvalidKeySpecException, NoSuchAlgorithmException {
         var privateKeyPEM = "-----BEGIN PRIVATE KEY-----\n" +
                 "MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDciyVulYhrxChJ\n" +
                 "OgRoxeer1jk1OrR0zXpmkNw/lKFFsqadN7xTdiheI8UTLjwilxETeIFq8gFowV4Z\n" +
@@ -52,7 +57,7 @@ class KeyProviderTest {
     }
 
     @Test
-    void testStringToPublicKey() throws NoSuchAlgorithmException, InvalidKeySpecException {
+    void whenStringToPublicKey_thenReturnPublicKey() throws NoSuchAlgorithmException, InvalidKeySpecException {
         var publicKeyPEM = "-----BEGIN PUBLIC KEY-----\n" +
                 "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3IslbpWIa8QoSToEaMXn\n" +
                 "q9Y5NTq0dM16ZpDcP5ShRbKmnTe8U3YoXiPFEy48IpcRE3iBavIBaMFeGe1zeEOW\n" +
