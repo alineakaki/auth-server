@@ -41,7 +41,6 @@ public class AuthServiceImpl implements AuthService {
                     .getPayload();
         } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
             log.error("######## Error > publicKey : {}", e.getMessage());
-            throw new RuntimeException(e);
         }
 
         var payload = new String(Base64.getDecoder().decode(payloadB64));
