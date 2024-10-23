@@ -34,6 +34,6 @@ class JwtControllerTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(token, Objects.requireNonNull(response.getBody()).getToken());
-        assertEquals("Bearer", response.getBody().getTokenType());
+        assertEquals("Bearer ", response.getBody().getTokenType());
     }
 }
