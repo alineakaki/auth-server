@@ -32,4 +32,16 @@ public class StringMocks {
                 "BWUTj2K9blyVVtoPHUE7MDc=\n" +
                 "-----END PRIVATE KEY-----";
     }
+
+    public static String getPublicKey() {
+        return "-----BEGIN PUBLIC KEY-----\n" +
+                "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3IslbpWIa8QoSToEaMXn\n" +
+                "q9Y5NTq0dM16ZpDcP5ShRbKmnTe8U3YoXiPFEy48IpcRE3iBavIBaMFeGe1zeEOW\n" +
+                "DjO1fnJpWn1keOKDWve8+Bg5bqW+D+ypiRJOHBtvKviUPaCWJJMU8aKrGju/qYjy\n" +
+                "53jrO1H7IDhNVysWEyddBhPTxEvMLdDX7XpkjepKqX6+7SDjtrJgAvuBEWJF6Ict\n" +
+                "YpXn5V7ySz+OP0C55rdx6jkoLLKIPL/Gor+OSG6NACe9KIHZSu1FIvwSIppZ9Q0c\n" +
+                "J8/zKzh9ZJSIxt03baLFPUw4jVXnzFmhkyvvPLf6oF2ZE08riLZIxEODgupRBcgv\n" +
+                "eQIDAQAB\n" +
+                "-----END PUBLIC KEY-----";
+    }
 }
