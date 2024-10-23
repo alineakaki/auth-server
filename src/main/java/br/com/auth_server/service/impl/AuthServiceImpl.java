@@ -27,7 +27,7 @@ import static br.com.auth_server.util.JwtConstants.BEARER_PREFIX;
 @Service
 public class AuthServiceImpl implements AuthService {
     @Value("${public.key}")
-    String publicKeyString;
+    private String publicKeyString;
 
     private final KeyProvider keyProvider;
 
